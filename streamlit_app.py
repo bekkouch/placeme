@@ -28,13 +28,27 @@ st.set_page_config(
 # ─────────────────────────────────────────────
 st.markdown("""
 <style>
+/*
+  PALETTE RÔLES
+  #496ddb — Bleu primaire  → brand, CTA, leads complets, focus
+  #717ec3 — Bleu-violet    → progress bar, tab active, section accent
+  #ee8434 — Orange         → spinner, taux (énergie / action en cours)
+  #c95d63 — Rose-rouge     → leads incomplets, warnings
+  #ae8799 — Mauve doux     → téléphone, labels secondaires, download
+  Fond    : #13121e        → deep space
+  Surface : #1b1929        → cards
+  Border  : #272540        → séparateurs
+  Texte   : #ede9f5        → principal
+  Muted   : #7a7590        → labels uppercase
+*/
+
 @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap');
 
 html, body,
 [data-testid="stAppViewContainer"],
 [data-testid="stMain"] {
-    background: #0c0c12 !important;
-    color: #e8e6e0 !important;
+    background: #13121e !important;
+    color: #ede9f5 !important;
     font-family: 'DM Sans', sans-serif !important;
 }
 [data-testid="stHeader"]  { background: transparent !important; }
@@ -46,172 +60,210 @@ section[data-testid="stMain"] > div { padding-top: 0 !important; }
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 1.1rem 0 1rem 0;
-    border-bottom: 1px solid #1e1e2a;
+    padding: 1.2rem 0 1rem 0;
+    border-bottom: 1px solid #272540;
     margin-bottom: 2.5rem;
 }
 .navbar-brand {
     font-family: 'Space Mono', monospace;
-    font-size: 1.55rem;
+    font-size: 1.5rem;
     font-weight: 700;
-    color: #f0ede6;
-    letter-spacing: -1px;
+    color: #ede9f5;
+    letter-spacing: -0.5px;
 }
-.navbar-brand span { color: #c8f55a; }
+/* "Me" en bleu primaire = identité de marque forte */
+.navbar-brand span { color: #496ddb; }
 .navbar-tagline {
-    font-size: 0.8rem;
-    color: #555;
+    font-size: 0.75rem;
+    color: #7a7590;
     font-family: 'Space Mono', monospace;
+    letter-spacing: 0.03em;
 }
 
 /* ── Search label ── */
 .search-label {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     font-weight: 700;
-    color: #555;
-    letter-spacing: 0.08em;
+    color: #7a7590;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
-    margin-bottom: 0.4rem;
+    margin-bottom: 0.45rem;
     font-family: 'Space Mono', monospace;
 }
 
 /* ── Input ── */
 .stTextInput > div > div > input {
-    background: #111118 !important;
-    border: 1px solid #2a2a38 !important;
+    background: #1b1929 !important;
+    border: 1.5px solid #272540 !important;
     border-right: none !important;
-    border-radius: 4px 0 0 4px !important;
-    color: #f0ede6 !important;
-    font-family: 'Space Mono', monospace !important;
+    border-radius: 6px 0 0 6px !important;
+    color: #ede9f5 !important;
+    font-family: 'DM Sans', sans-serif !important;
     font-size: 0.95rem !important;
-    padding: 0.8rem 1rem !important;
-    height: 44px !important;
-    transition: border-color 0.15s !important;
+    padding: 0.75rem 1rem !important;
+    height: 46px !important;
+    transition: border-color 0.2s !important;
 }
+.stTextInput > div > div > input::placeholder { color: #4a4760 !important; }
+/* Focus: bleu primaire = affordance claire */
 .stTextInput > div > div > input:focus {
-    border-color: #c8f55a !important;
-    box-shadow: 0 0 0 2px rgba(200,245,90,0.1) !important;
+    border-color: #496ddb !important;
+    box-shadow: 0 0 0 3px rgba(73,109,219,0.15) !important;
     outline: none !important;
 }
 .stTextInput label { display: none !important; }
 
-/* ── Launch button ── */
+/* ── CTA — form submit (Enter / Lancer) ── */
+/* Orange = énergie, action, contraste chaud sur fond froid */
+[data-testid="stFormSubmitButton"] > button,
 .stButton > button {
-    background: #c8f55a !important;
-    color: #0c0c12 !important;
+    background: #ee8434 !important;
+    color: #13121e !important;
     border: none !important;
-    border-radius: 0 4px 4px 0 !important;
+    border-radius: 0 6px 6px 0 !important;
     font-family: 'Space Mono', monospace !important;
     font-weight: 700 !important;
-    font-size: 0.85rem !important;
-    height: 44px !important;
-    padding: 0 1.4rem !important;
-    margin-top: 0 !important;
+    font-size: 0.82rem !important;
+    height: 46px !important;
+    padding: 0 1.5rem !important;
     cursor: pointer !important;
-    transition: opacity 0.15s !important;
+    transition: filter 0.15s !important;
     white-space: nowrap !important;
     width: 100% !important;
-    letter-spacing: 0.04em !important;
+    letter-spacing: 0.05em !important;
 }
-.stButton > button:hover { opacity: 0.85 !important; }
+[data-testid="stFormSubmitButton"] > button:hover,
+.stButton > button:hover { filter: brightness(1.1) !important; }
 
 /* ── Metric cards ── */
 .metrics-row {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 1rem;
-    margin: 2rem 0;
+    gap: 0.85rem;
+    margin: 2rem 0 1.5rem 0;
 }
 .metric-card {
-    background: #111118;
-    border: 1px solid #1e1e2a;
-    border-radius: 6px;
-    padding: 1.2rem 1.5rem;
+    background: #1b1929;
+    border: 1px solid #272540;
+    border-radius: 8px;
+    padding: 1.2rem 1.4rem 1rem 1.4rem;
+    position: relative;
+    overflow: hidden;
 }
+/* Barre colorée en haut de chaque carte = hiérarchie visuelle */
+.metric-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--card-accent, #496ddb);
+    border-radius: 8px 8px 0 0;
+}
+.metric-card.c-total   { --card-accent: #496ddb; }
+.metric-card.c-ok      { --card-accent: #717ec3; }
+.metric-card.c-warn    { --card-accent: #c95d63; }
+.metric-card.c-rate    { --card-accent: #ee8434; }
+
 .metric-card .m-label {
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     font-weight: 700;
-    color: #555;
+    color: #7a7590;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.1em;
     font-family: 'Space Mono', monospace;
-    margin-bottom: 0.3rem;
+    margin-bottom: 0.5rem;
 }
 .metric-card .m-value {
     font-family: 'Space Mono', monospace;
-    font-size: 2rem;
+    font-size: 2.1rem;
     font-weight: 700;
-    line-height: 1.2;
-    color: #c8f55a;
+    line-height: 1;
+    color: #496ddb;
 }
-.metric-card .m-value.amber { color: #f5a623; }
-.metric-card .m-value.white { color: #f0ede6; }
+.metric-card.c-ok   .m-value { color: #717ec3; }
+.metric-card.c-warn .m-value { color: #c95d63; }
+.metric-card.c-rate .m-value { color: #ee8434; }
 
 /* ── Tabs ── */
 .stTabs [data-baseweb="tab-list"] {
     background: transparent !important;
-    border-bottom: 1px solid #1e1e2a !important;
+    border-bottom: 1px solid #272540 !important;
     gap: 0 !important;
 }
 .stTabs [data-baseweb="tab"] {
     background: transparent !important;
-    color: #555 !important;
+    color: #7a7590 !important;
     font-family: 'Space Mono', monospace !important;
-    font-size: 0.78rem !important;
+    font-size: 0.75rem !important;
     border-radius: 0 !important;
     border-bottom: 2px solid transparent !important;
     margin-bottom: -1px !important;
-    padding: 0.6rem 1.2rem !important;
+    padding: 0.65rem 1.3rem !important;
+    letter-spacing: 0.03em !important;
+    transition: color 0.15s !important;
 }
+/* Tab active: bleu-violet = état actif calme */
 .stTabs [aria-selected="true"] {
-    color: #c8f55a !important;
-    border-bottom: 2px solid #c8f55a !important;
+    color: #717ec3 !important;
+    border-bottom: 2px solid #717ec3 !important;
 }
+.stTabs [data-baseweb="tab"]:hover { color: #ae8799 !important; }
 
 /* ── Dataframe ── */
 [data-testid="stDataFrame"] {
-    border: 1px solid #1e1e2a !important;
-    border-radius: 6px !important;
+    border: 1px solid #272540 !important;
+    border-radius: 8px !important;
     overflow: hidden !important;
+    background: #1b1929 !important;
 }
 
-/* ── Progress ── */
-.stProgress > div > div { background: #000000 !important; }
-.stProgress > div       { background: #1e1e2a !important; }
+/* ── Progress — bleu-violet = progression régulière ── */
+.stProgress > div > div {
+    background: linear-gradient(90deg, #496ddb, #717ec3) !important;
+    border-radius: 4px !important;
+}
+.stProgress > div { background: #272540 !important; border-radius: 4px !important; }
 
-/* ── Spinner (orange pour différencier du vert) ── */
-.stSpinner > div { border-top-color: #f5a623 !important; }
-[data-testid="stSpinner"] p { color: #f5a623 !important; }
+/* ── Spinner — orange = chargement actif ── */
+.stSpinner > div { border-top-color: #ee8434 !important; }
+[data-testid="stSpinner"] p { color: #ee8434 !important; }
 
-/* ── Download buttons ── */
+/* ── Download — mauve = action secondaire (pas compétition avec CTA) ── */
 [data-testid="stDownloadButton"] > button {
     background: transparent !important;
-    color: #c8f55a !important;
-    border: 1px solid #c8f55a !important;
-    border-radius: 4px !important;
+    color: #ae8799 !important;
+    border: 1px solid #ae8799 !important;
+    border-radius: 6px !important;
     font-family: 'Space Mono', monospace !important;
     font-weight: 700 !important;
-    font-size: 0.78rem !important;
-    padding: 0.45rem 1rem !important;
-    transition: opacity 0.15s !important;
+    font-size: 0.75rem !important;
+    padding: 0.5rem 1.1rem !important;
+    transition: all 0.15s !important;
     letter-spacing: 0.04em !important;
 }
-[data-testid="stDownloadButton"] > button:hover { opacity: 0.75 !important; }
+[data-testid="stDownloadButton"] > button:hover {
+    background: rgba(174,135,153,0.1) !important;
+    color: #ede9f5 !important;
+    border-color: #ede9f5 !important;
+}
 
 /* ── Section heading ── */
 .section-heading {
-    font-size: 0.7rem;
+    font-size: 0.68rem;
     font-weight: 700;
-    color: #444;
+    color: #7a7590;
     text-transform: uppercase;
     letter-spacing: 0.12em;
     font-family: 'Space Mono', monospace;
     margin: 0 0 1rem 0;
     padding-bottom: 0.5rem;
-    border-bottom: 1px solid #1e1e2a;
+    border-bottom: 1px solid #272540;
 }
 
-div[data-testid="stMarkdownContainer"] p { color: #aaa !important; }
+/* ── Alerts / info ── */
+[data-testid="stAlert"] { border-radius: 6px !important; }
+
+div[data-testid="stMarkdownContainer"] p { color: #a09bb8 !important; }
 #MainMenu, footer { visibility: hidden !important; }
 </style>
 """, unsafe_allow_html=True)
@@ -336,7 +388,7 @@ with st.form("search_form", border=False):
             key="city_input",
         )
     with col_btn:
-        launch = st.form_submit_button("🔍 Lancer", use_container_width=True)
+        launch = st.form_submit_button("🔍 Lancer", width="stretch")
 
 # ─────────────────────────────────────────────
 # PIPELINE
@@ -355,21 +407,21 @@ def render_results():
 
     st.markdown(f"""
     <div class="metrics-row" role="region" aria-label="Résumé">
-        <div class="metric-card">
+        <div class="metric-card c-total">
             <div class="m-label">Total scrapés</div>
             <div class="m-value">{tot}</div>
         </div>
-        <div class="metric-card">
+        <div class="metric-card c-ok">
             <div class="m-label">Leads complets</div>
             <div class="m-value">{n_c}</div>
         </div>
-        <div class="metric-card">
+        <div class="metric-card c-warn">
             <div class="m-label">Leads incomplets</div>
-            <div class="m-value amber">{n_i}</div>
+            <div class="m-value">{n_i}</div>
         </div>
-        <div class="metric-card">
+        <div class="metric-card c-rate">
             <div class="m-label">Taux de complétion</div>
-            <div class="m-value white">{taux}%</div>
+            <div class="m-value">{taux}%</div>
         </div>
     </div>
     """, unsafe_allow_html=True)
@@ -377,13 +429,13 @@ def render_results():
     tab1, tab2 = st.tabs([f"✅ Leads complets ({n_c})", f"⚠️ Leads incomplets ({n_i})"])
     with tab1:
         if rc:
-            st.dataframe(pd.DataFrame(rc, columns=COL_C), use_container_width=True, hide_index=True,
+            st.dataframe(pd.DataFrame(rc, columns=COL_C), width="stretch", hide_index=True,
                 column_config={"Site web": st.column_config.LinkColumn("Site web")})
         else:
             st.caption("Aucun lead complet trouvé.")
     with tab2:
         if ri:
-            st.dataframe(pd.DataFrame(ri, columns=COL_I), use_container_width=True, hide_index=True,
+            st.dataframe(pd.DataFrame(ri, columns=COL_I), width="stretch", hide_index=True,
                 column_config={"Site web": st.column_config.LinkColumn("Site web"),
                                "Manque":   st.column_config.TextColumn("Données manquantes")})
         else:
@@ -409,6 +461,14 @@ def render_results():
             disabled=not ri,
             key="dl_incomplets",
         )
+
+# ── Si nouvelle ville soumise → reset pour relancer ──
+if launch and city.strip() and city.strip() != st.session_state.get("last_city"):
+    st.session_state.done            = False
+    st.session_state.rows_complets   = None
+    st.session_state.rows_incomplets = None
+    st.session_state.total           = None
+    st.session_state.city_slug       = None
 
 # ── Si résultats déjà en mémoire, les afficher directement ──
 if st.session_state.done:
@@ -447,14 +507,14 @@ elif launch and city.strip():
                 st.caption("Aucun lead complet pour l'instant...")
             else:
                 st.dataframe(pd.DataFrame(rows_complets, columns=COL_C),
-                    use_container_width=True, hide_index=True,
+                    width="stretch", hide_index=True,
                     column_config={"Site web": st.column_config.LinkColumn("Site web")})
         with container_incomplets:
             if not rows_incomplets:
                 st.caption("Aucun lead incomplet pour l'instant...")
             else:
                 st.dataframe(pd.DataFrame(rows_incomplets, columns=COL_I),
-                    use_container_width=True, hide_index=True,
+                    width="stretch", hide_index=True,
                     column_config={"Site web": st.column_config.LinkColumn("Site web"),
                                    "Manque":   st.column_config.TextColumn("Données manquantes")})
 
@@ -511,6 +571,7 @@ elif launch and city.strip():
     st.session_state.rows_incomplets = rows_incomplets
     st.session_state.total           = total
     st.session_state.city_slug       = city_slug
+    st.session_state.last_city       = city
     st.session_state.done            = True
     st.rerun()
 
