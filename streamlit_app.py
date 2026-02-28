@@ -263,7 +263,7 @@ section[data-testid="stMain"] > div { padding-top: 0 !important; }
 /* ── Alerts / info ── */
 [data-testid="stAlert"] { border-radius: 6px !important; }
 
-div[data-testid="stMarkdownContainer"] p { color: #a09bb8 !important; }
+div[data-testid="stMarkdownContainer"] p { color: #ffffff !important; }
 #MainMenu, footer { visibility: hidden !important; }
 </style>
 """, unsafe_allow_html=True)
