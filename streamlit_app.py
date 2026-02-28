@@ -176,7 +176,7 @@ section[data-testid="stMain"] > div { padding-top: 0 !important; }
 }
 
 /* ── Progress ── */
-.stProgress > div > div { background: #c8f55a !important; }
+.stProgress > div > div { background: #000000 !important; }
 .stProgress > div       { background: #1e1e2a !important; }
 
 /* ── Spinner (orange pour différencier du vert) ── */
