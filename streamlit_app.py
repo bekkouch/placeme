@@ -263,7 +263,7 @@ section[data-testid="stMain"] > div { padding-top: 0 !important; }
 /* ── Alerts / info ── */
 [data-testid="stAlert"] { border-radius: 6px !important; }
 
-div[data-testid="stMarkdownContainer"] p { color: #ffffff !important; }
+div[data-testid="stMarkdownContainer"] p { color: #a09bb8 !important; }
 #MainMenu, footer { visibility: hidden !important; }
 </style>
 """, unsafe_allow_html=True)
@@ -327,7 +327,16 @@ def to_csv_bytes(df: pd.DataFrame) -> bytes:
 # ─────────────────────────────────────────────
 @st.cache_data(show_spinner=False)
 def fetch_osm(city: str) -> pd.DataFrame:
-    pois = ox.features_from_place(city, tags=TARGET_TAGS)
+    import osmnx as ox
+    # Timeout étendu pour les grandes métropoles
+    ox.settings.timeout = 180
+    ox.settings.max_query_area_size = 25_000_000_000  # ~5000km²
+
+    try:
+        pois = ox.features_from_place(city, tags=TARGET_TAGS)
+    except Exception as e:
+        raise RuntimeError(f"OSM query failed for '{city}': {e}")
+
     contact_cols = ["name", "amenity", "office", "phone", "contact:phone",
                     "email", "contact:email", "website"]
     available = [c for c in contact_cols if c in pois.columns]
@@ -349,9 +358,13 @@ def fetch_osm(city: str) -> pd.DataFrame:
         df["osm_email"] = pd.NA
 
     df["final_email"] = pd.NA
-    # Normaliser le nom pour la dédup (lowercase, strip accents simples)
     df["_name_key"] = df["name"].astype(str).str.lower().str.strip()
     df = df.drop_duplicates(subset=["_name_key"]).drop(columns=["_name_key"]).reset_index(drop=True)
+
+    # Cap à 2000 pour les métropoles géantes (Tokyo, Paris...)
+    if len(df) > 2000:
+        df = df.sample(n=2000, random_state=42).reset_index(drop=True)
+
     return df
 
 # ─────────────────────────────────────────────
@@ -482,11 +495,21 @@ elif launch and city.strip():
         try:
             df = fetch_osm(city)
         except Exception as e:
-            st.error(f"**Ville introuvable ou erreur OSM** — {e}")
+            err = str(e)
+            st.error(f"**Erreur OSM** — {err}")
+            if "timed out" in err.lower() or "timeout" in err.lower():
+                st.info("💡 Pour les grandes villes, essaie un arrondissement ou quartier : ex. `Shinjuku, Tokyo, Japan` ou `Paris 1er, France`", icon="🗺️")
+            elif "not found" in err.lower() or "nominatim" in err.lower():
+                st.info("💡 Précise le pays : ex. `Tokyo, Japan` — `Lyon, France` — `Bruxelles, Belgique`", icon="🗺️")
             st.stop()
 
     total = len(df)
-    st.info(f"**{total} lieux trouvés.** Scraping des emails en cours...", icon="📍")
+    was_capped = total == 2000
+
+    if was_capped:
+        st.warning(f"**Grande métropole détectée** — résultats limités à 2 000 lieux (échantillon aléatoire). Pour plus de précision, cible un quartier : ex. `Shinjuku, Tokyo, Japan`", icon="🌆")
+    else:
+        st.info(f"**{total} lieux trouvés.** Scraping des emails en cours...", icon="📍")
 
     progress_bar = st.progress(0, text="Initialisation...")
 
